@@ -1,0 +1,85 @@
+import java.util.*;
+
+public class Wishlist {
+    private int id;
+    private List<Book> books;
+
+    public Wishlist(int id) {
+        this.id = id;
+        this.books = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+}
+
+public class Book {
+    private int id;
+    private String title;
+
+    public Book(int id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+}
+
+public class WishlistService {
+    private Map<Integer, Wishlist> wishlists;
+    private int nextWishlistId;
+
+    public WishlistService() {
+        this.wishlists = new HashMap<>();
+        this.nextWishlistId = 1;
+    }
+
+    public int createWishlist() {
+        int wishlistId = nextWishlistId;
+        wishlists.put(wishlistId, new Wishlist(wishlistId));
+        nextWishlistId++;
+        return wishlistId;
+    }
+
+    public void addBookToWishlist(int bookId, int wishlistId) {
+        Book book = findBookById(bookId);
+        Wishlist wishlist = findWishlistById(wishlistId);
+        wishlist.addBook(book);
+    }
+
+    private Book findBookById(int bookId) {
+        // find the book by id, for example by querying a database
+        return new Book(bookId, "Example book title");
+    }
+
+    private Wishlist findWishlistById(int wishlistId) {
+        Wishlist wishlist = wishlists.get(wishlistId);
+        if (wishlist == null) {
+            throw new IllegalArgumentException("Wishlist with id " + wishlistId + " not found");
+        }
+        return wishlist;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        WishlistService wishlistService = new WishlistService();
+        int wishlistId = wishlistService.createWishlist();
+        wishlistService.addBookToWishlist(123, wishlistId);
+    }
+}
